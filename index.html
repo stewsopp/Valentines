@@ -8,74 +8,64 @@
 html, body {
   margin: 0;
   padding: 0;
+  width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #ffb6c1, #ffe4e1);
-  font-family: 'Comic Sans MS', cursive;
+  overflow: hidden;
 }
 
 body {
+  position: fixed;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: linear-gradient(135deg, #ffd1dc, #ffe6f0);
+  font-family: "Comic Sans MS", cursive;
 }
 
 #card {
-  background: white;
-  padding: 40px 50px 50px;
-  border-radius: 20px;
-  text-align: center;
-  box-shadow: 0 0 40px rgba(0,0,0,0.2);
   width: 320px;
+  background: white;
+  border-radius: 20px;
+  padding: 30px 20px 50px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.15);
+  text-align: center;
   position: relative;
 }
 
 h1 {
   color: #ff4d6d;
-  margin-bottom: 25px;
-}
-
-#buttons {
-  display: flex;
-  justify-content: space-between;
-  margin: 30px 0 20px;
+  margin-bottom: 30px;
 }
 
 button {
-  font-size: 22px;
-  padding: 14px 28px;
-  border-radius: 12px;
   border: none;
+  padding: 12px 25px;
+  border-radius: 12px;
+  font-size: 18px;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  position: absolute;
 }
 
-#yes {
+#yesBtn {
   background: #ff4d6d;
   color: white;
+  left: 40px;
+  bottom: 20px;
 }
 
-#no {
-  background: #ccc;
-  color: black;
-  position: relative;
+#noBtn {
+  background: #ddd;
+  right: 40px;
+  bottom: 20px;
 }
 
 #message {
-  min-height: 30px;
-  font-size: 18px;
+  margin-top: 25px;
+  font-size: 22px;
   color: #ff4d6d;
-  margin-top: 10px;
-}
-
-.heart {
-  position: fixed;
-  font-size: 28px;
-  animation: float 3s linear forwards;
-}
-
-@keyframes float {
-  from { transform: translateY(0); opacity: 1; }
-  to { transform: translateY(-250px); opacity: 0; }
+  opacity: 0;
+  transition: opacity 0.6s;
 }
 </style>
 </head>
@@ -85,65 +75,26 @@ button {
 <div id="card">
   <h1>Will you be my Valentine? 💖</h1>
 
-  <div id="buttons">
-    <button id="yes">YES 💕</button>
-    <button id="no">NO 😐</button>
-  </div>
+  <button id="yesBtn">YES 💕</button>
+  <button id="noBtn">NO 😅</button>
 
-  <div id="message"></div>
+  <div id="message">Yay!! I knew you’d say yes 💘🥰</div>
 </div>
 
 <script>
-const no = document.getElementById("no");
-const yes = document.getElementById("yes");
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
 const message = document.getElementById("message");
 
-let falling = false;
-let velocity = 0;
-let y = 0;
+noBtn.addEventListener("click", () => {
+  noBtn.style.transition = "top 1s";
+  noBtn.style.top = "120%";
+});
 
-function startFall() {
-  if (falling) return;
-  falling = true;
-  message.innerHTML = "Uh oh… gravity 😅";
-
-  const rect = no.getBoundingClientRect();
-  no.style.position = "fixed";
-  no.style.left = rect.left + "px";
-  no.style.top = rect.top + "px";
-
-  y = rect.top;
-  velocity = 0;
-  requestAnimationFrame(fall);
-}
-
-function fall() {
-  velocity += 1.5;
-  y += velocity;
-  no.style.top = y + "px";
-
-  if (y > window.innerHeight) {
-    no.style.display = "none";
-    message.innerHTML = "Looks like NO fell off… 💕";
-  } else {
-    requestAnimationFrame(fall);
-  }
-}
-
-no.addEventListener("mouseenter", startFall);
-no.addEventListener("touchstart", startFall);
-
-yes.addEventListener("click", () => {
-  message.innerHTML = "YAY!! 💖 Can’t wait to be your Valentine!";
-  for (let i = 0; i < 30; i++) {
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "💖";
-    heart.style.left = Math.random() * window.innerWidth + "px";
-    heart.style.top = window.innerHeight + "px";
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 3000);
-  }
+yesBtn.addEventListener("click", () => {
+  message.style.opacity = "1";
+  yesBtn.style.display = "none";
+  noBtn.style.display = "none";
 });
 </script>
 
