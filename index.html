@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Will You Be My Valentine?</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #ffb6c1, #ffe4e1);
+    overflow: hidden;
+    font-family: 'Comic Sans MS', cursive;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #card {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(0,0,0,0.2);
+  }
+
+  h1 {
+    color: #ff4d6d;
+    margin-bottom: 30px;
+  }
+
+  button {
+    font-size: 24px;
+    padding: 15px 30px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+  }
+
+  #yes {
+    background: #ff4d6d;
+    color: white;
+    left: 50%;
+    top: 60%;
+    transform: translate(-120%, -50%);
+  }
+
+  #no {
+    background: #ccc;
+    color: black;
+    left: 50%;
+    top: 60%;
+    transform: translate(20%, -50%);
+  }
+
+  #message {
+    margin-top: 20px;
+    font-size: 20px;
+    color: #ff4d6d;
+  }
+
+  .heart {
+    position: absolute;
+    color: red;
+    font-size: 30px;
+    animation: float 3s linear forwards;
+  }
+
+  @keyframes float {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(-200px); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div id="card">
+  <h1>Will you be my Valentine? 💖</h1>
+  <div id="message"></div>
+</div>
+
+<button id="yes">YES 💕</button>
+<button id="no">NO 😐</button>
+
+<script>
+const no = document.getElementById("no");
+const yes = document.getElementById("yes");
+const message = document.getElementById("message");
+
+let gravity = 0;
+let velocity = 0;
+let y = window.innerHeight * 0.6;
+
+no.style.top = y + "px";
+
+function applyGravity() {
+  velocity += gravity;
+  y += velocity;
+  no.style.top = y + "px";
+
+  if (y > window.innerHeight) {
+    no.style.display = "none";
+    message.innerHTML = "Oops… looks like NO fell off 😅";
+  } else {
+    requestAnimationFrame(applyGravity);
+  }
+}
+
+no.addEventListener("mouseover", () => {
+  gravity = 1;
+  velocity = 0;
+  applyGravity();
+  message.innerHTML = "Uh oh… gravity!";
+});
+
+no.addEventListener("touchstart", () => {
+  gravity = 1;
+  velocity = 0;
+  applyGravity();
+  message.innerHTML = "Uh oh… gravity!";
+});
+
+yes.addEventListener("click", () => {
+  message.innerHTML = "YAY!!! 💖💖💖";
+  for (let i = 0; i < 30; i++) {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "💖";
+    heart.style.left = Math.random() * window.innerWidth + "px";
+    heart.style.top = window.innerHeight + "px";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 3000);
+  }
+});
+</script>
+
+</body>
+</html>
