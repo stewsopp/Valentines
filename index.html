@@ -3,125 +3,138 @@
 <head>
 <meta charset="UTF-8">
 <title>Will You Be My Valentine?</title>
+
 <style>
-  body {
-    margin: 0;
-    height: 100vh;
-    background: linear-gradient(135deg, #ffb6c1, #ffe4e1);
-    overflow: hidden;
-    font-family: 'Comic Sans MS', cursive;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: linear-gradient(135deg, #ffb6c1, #ffe4e1);
+  font-family: 'Comic Sans MS', cursive;
+}
 
-  #card {
-    background: white;
-    padding: 40px;
-    border-radius: 20px;
-    text-align: center;
-    box-shadow: 0 0 40px rgba(0,0,0,0.2);
-  }
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  h1 {
-    color: #ff4d6d;
-    margin-bottom: 30px;
-  }
+#card {
+  background: white;
+  padding: 40px 50px 50px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 0 40px rgba(0,0,0,0.2);
+  width: 320px;
+  position: relative;
+}
 
-  button {
-    font-size: 24px;
-    padding: 15px 30px;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    position: absolute;
-  }
+h1 {
+  color: #ff4d6d;
+  margin-bottom: 25px;
+}
 
-  #yes {
-    background: #ff4d6d;
-    color: white;
-    left: 50%;
-    top: 60%;
-    transform: translate(-120%, -50%);
-  }
+#buttons {
+  display: flex;
+  justify-content: space-between;
+  margin: 30px 0 20px;
+}
 
-  #no {
-    background: #ccc;
-    color: black;
-    left: 50%;
-    top: 60%;
-    transform: translate(20%, -50%);
-  }
+button {
+  font-size: 22px;
+  padding: 14px 28px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
 
-  #message {
-    margin-top: 20px;
-    font-size: 20px;
-    color: #ff4d6d;
-  }
+#yes {
+  background: #ff4d6d;
+  color: white;
+}
 
-  .heart {
-    position: absolute;
-    color: red;
-    font-size: 30px;
-    animation: float 3s linear forwards;
-  }
+#no {
+  background: #ccc;
+  color: black;
+  position: relative;
+}
 
-  @keyframes float {
-    from { transform: translateY(0); opacity: 1; }
-    to { transform: translateY(-200px); opacity: 0; }
-  }
+#message {
+  min-height: 30px;
+  font-size: 18px;
+  color: #ff4d6d;
+  margin-top: 10px;
+}
+
+.heart {
+  position: fixed;
+  font-size: 28px;
+  animation: float 3s linear forwards;
+}
+
+@keyframes float {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-250px); opacity: 0; }
+}
 </style>
 </head>
+
 <body>
 
 <div id="card">
   <h1>Will you be my Valentine? 💖</h1>
+
+  <div id="buttons">
+    <button id="yes">YES 💕</button>
+    <button id="no">NO 😐</button>
+  </div>
+
   <div id="message"></div>
 </div>
-
-<button id="yes">YES 💕</button>
-<button id="no">NO 😐</button>
 
 <script>
 const no = document.getElementById("no");
 const yes = document.getElementById("yes");
 const message = document.getElementById("message");
 
-let gravity = 0;
+let falling = false;
 let velocity = 0;
-let y = window.innerHeight * 0.6;
+let y = 0;
 
-no.style.top = y + "px";
+function startFall() {
+  if (falling) return;
+  falling = true;
+  message.innerHTML = "Uh oh… gravity 😅";
 
-function applyGravity() {
-  velocity += gravity;
+  const rect = no.getBoundingClientRect();
+  no.style.position = "fixed";
+  no.style.left = rect.left + "px";
+  no.style.top = rect.top + "px";
+
+  y = rect.top;
+  velocity = 0;
+  requestAnimationFrame(fall);
+}
+
+function fall() {
+  velocity += 1.5;
   y += velocity;
   no.style.top = y + "px";
 
   if (y > window.innerHeight) {
     no.style.display = "none";
-    message.innerHTML = "Oops… looks like NO fell off 😅";
+    message.innerHTML = "Looks like NO fell off… 💕";
   } else {
-    requestAnimationFrame(applyGravity);
+    requestAnimationFrame(fall);
   }
 }
 
-no.addEventListener("mouseover", () => {
-  gravity = 1;
-  velocity = 0;
-  applyGravity();
-  message.innerHTML = "Uh oh… gravity!";
-});
-
-no.addEventListener("touchstart", () => {
-  gravity = 1;
-  velocity = 0;
-  applyGravity();
-  message.innerHTML = "Uh oh… gravity!";
-});
+no.addEventListener("mouseenter", startFall);
+no.addEventListener("touchstart", startFall);
 
 yes.addEventListener("click", () => {
-  message.innerHTML = "YAY!!! 💖💖💖";
+  message.innerHTML = "YAY!! 💖 Can’t wait to be your Valentine!";
   for (let i = 0; i < 30; i++) {
     const heart = document.createElement("div");
     heart.className = "heart";
