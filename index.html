@@ -60,12 +60,11 @@ button {
   bottom: 20px;
 }
 
-#message {
-  margin-top: 25px;
-  font-size: 22px;
-  color: #ff4d6d;
-  opacity: 0;
-  transition: opacity 0.6s;
+#stickman {
+  position: fixed;
+  font-size: 28px;
+  display: none;
+  user-select: none;
 }
 </style>
 </head>
@@ -74,33 +73,95 @@ button {
 
 <div id="card">
   <h1>Will you be my Valentine? 💖</h1>
-
   <button id="yesBtn">YES 💕</button>
-  <button id="noBtn">NO 😅</button>
-
-  <div id="message">Yay!! I knew you’d say yes 💘🥰</div>
+  <button id="noBtn">NO 😐</button>
 </div>
+
+<div id="stickman">🧍‍♂️🖕</div>
 
 <script>
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
-const message = document.getElementById("message");
+const stick = document.getElementById("stickman");
 
-noBtn.addEventListener("click", () => {
-  noBtn.style.transition = "transform 1.4s ease-in, opacity 1.2s";
-  noBtn.style.transform = "translateY(600px) rotate(720deg)";
-  noBtn.style.opacity = "0";
+let falling = false;
+let velocity = 0;
+let y = 0;
+let x = 0;
 
-  // remove it after animation so it can't be clicked again
-  setTimeout(() => {
-    noBtn.style.display = "none";
-  }, 1400);
-});
+function startFall() {
+  if (falling) return;
+  falling = true;
+
+  const rect = noBtn.getBoundingClientRect();
+  x = rect.left;
+  y = rect.top;
+
+  noBtn.style.position = "fixed";
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+
+  requestAnimationFrame(fall);
+}
+
+function fall() {
+  velocity += 1.4;
+  y += velocity;
+
+  const floor = window.innerHeight - noBtn.offsetHeight - 10;
+
+  if (y >= floor) {
+    y = floor;
+    velocity *= -0.45;
+
+    if (Math.abs(velocity) < 2) {
+      transformToStickman();
+      return;
+    }
+  }
+
+  noBtn.style.top = y + "px";
+  requestAnimationFrame(fall);
+}
+
+function transformToStickman() {
+  const rect = noBtn.getBoundingClientRect();
+  noBtn.style.display = "none";
+
+  stick.style.left = rect.left + "px";
+  stick.style.top = rect.top + "px";
+  stick.style.display = "block";
+
+  x = rect.left;
+  y = rect.top;
+
+  walk();
+}
+
+function walk() {
+  x += 2.5;
+  stick.style.left = x + "px";
+  stick.style.transform = `rotate(${Math.sin(x / 10) * 10}deg)`;
+
+  if (x > window.innerWidth) {
+    stick.style.display = "none";
+    return;
+  }
+
+  requestAnimationFrame(walk);
+}
+
+noBtn.addEventListener("click", startFall);
 
 yesBtn.addEventListener("click", () => {
-  message.style.opacity = "1";
   yesBtn.style.display = "none";
   noBtn.style.display = "none";
+
+  const hearts = document.createElement("div");
+  hearts.innerHTML = "💖💖💖";
+  hearts.style.fontSize = "48px";
+  hearts.style.marginTop = "20px";
+  document.getElementById("card").appendChild(hearts);
 });
 </script>
 
