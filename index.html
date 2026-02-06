@@ -87,8 +87,14 @@ const yesBtn = document.getElementById("yesBtn");
 const message = document.getElementById("message");
 
 noBtn.addEventListener("click", () => {
-  noBtn.style.transition = "top 1s";
-  noBtn.style.top = "120%";
+  noBtn.style.transition = "transform 1.4s ease-in, opacity 1.2s";
+  noBtn.style.transform = "translateY(600px) rotate(720deg)";
+  noBtn.style.opacity = "0";
+
+  // remove it after animation so it can't be clicked again
+  setTimeout(() => {
+    noBtn.style.display = "none";
+  }, 1400);
 });
 
 yesBtn.addEventListener("click", () => {
